@@ -30,9 +30,8 @@ sudo apt-get install android-tools-fsutils
 ```
 
 ### 2.2 Build the kernel
-+ For artik5>
 ```
-make ARCH=arm artik5_defconfig
+make ARCH=arm kitra520_defconfig
 ```
 If you want to change kernel configurations,
 ```

@@ -75,7 +75,7 @@ int fimc_is_sensor_read(struct i2c_client *client,
 	}
 
 	msg[0].addr = client->addr;
-	msg[0].flags = 0;
+	msg[0].flags = client->flags;
 	msg[0].len = 2;
 	msg[0].buf = wbuf;
 	wbuf[0] = array[1];
@@ -109,7 +109,7 @@ int fimc_is_sensor_write(struct i2c_client *client,
 	}
 
 	msg->addr = client->addr;
-	msg->flags = 0;
+	msg->flags = client->flags;
 	msg->len = 3;
 	msg->buf = wbuf;
 	wbuf[0] = array[1];
@@ -130,7 +130,7 @@ int fimc_is_sensor_write_burst(struct i2c_client *client,
 {
 	int ret = 0;
 	int retry_count = 5;
-	struct i2c_msg msg = {client->addr, 0, size, buf};
+	struct i2c_msg msg = {client->addr,  client->flags, size, buf};
 
 	do {
 		ret = i2c_transfer(client->adapter, &msg, 1);
@@ -161,7 +161,7 @@ int fimc_is_sensor_write16(struct i2c_client *client,
 	}
 
 	msg->addr = client->addr;
-	msg->flags = 0;
+	msg->flags = client->flags;
 	msg->len = 4;
 	msg->buf = wbuf;
 	wbuf[0] = (addr & 0xFF00) >> 8;

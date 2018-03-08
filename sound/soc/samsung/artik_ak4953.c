@@ -11,7 +11,6 @@
  *  Free Software Foundation;  either version 2 of the  License, or (at your
  *  option) any later version.
  */
-
 #include <linux/firmware.h>
 #include <linux/completion.h>
 #include <linux/workqueue.h>
@@ -382,7 +381,6 @@ static int set_aud_sclk(struct snd_soc_card *card, unsigned long rate)
 		ret = -EINVAL;
 		goto out3;
 	}
-
 	clk_set_rate(sclk_i2s, rate);
 
 	clk_put(sclk_i2s);
@@ -475,7 +473,8 @@ static struct snd_soc_dai_link artik_dai[] = {
 	{
 		.name = "AK4953 HiFi",
 		.stream_name = "Playback",
-		.codec_dai_name = "ak4953-AIF1",
+		//.codec_dai_name = "ak4953-AIF1",
+		.codec_dai_name = "sgtl5000",
 		.init = artik_ak4953_init_paiftx,
 		.ops = &artik_ops,
 	},

@@ -78,15 +78,15 @@
  * -----------------------------------------------------------------------------
  */
 
-/* #define DEBUG */
-#define DBG_VIDEO
-#define DBG_DEVICE
-/* #define DBG_STREAMING */
-#define DEBUG_INSTANCE 0xF
-/* #define BUG_ON_ENABLE */
-/* #define FIXED_FPS_DEBUG */
-#define FIXED_FPS_VALUE 10
-/* #define DBG_FLITEISR */
+//#define DEBUG
+//#define DBG_VIDEO
+//#define DBG_DEVICE
+//#define DBG_STREAMING
+//#define DEBUG_INSTANCE 0xF
+//#define BUG_ON_ENABLE
+//#define FIXED_FPS_DEBUG
+//#define FIXED_FPS_VALUE 10
+//#define DBG_FLITEISR
 #define FW_DEBUG
 #define RESERVED_MEM
 //#define SCALER_PARALLEL_MODE

@@ -420,7 +420,7 @@ static int fimc_is_sen_video_qbuf(struct file *file, void *priv,
 	struct fimc_is_video_ctx *vctx = file->private_data;
 
 #ifdef DBG_STREAMING
-	/*dbg_sensor("%s\n", __func__);*/
+    mdbgv_sensor("%s\n", vctx, __func__);
 #endif
 
 	ret = fimc_is_video_qbuf(file, vctx, buf);

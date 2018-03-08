@@ -1728,7 +1728,7 @@ int sensor_5ea_probe(struct i2c_client *client,
 	ext->sensor_con.product_name = SENSOR_NAME_S5K5EA;
 	ext->sensor_con.peri_type = SE_I2C;
 	ext->sensor_con.peri_setting.i2c.channel = SENSOR_CONTROL_I2C1;
-	ext->sensor_con.peri_setting.i2c.slave_address = 0x2D;
+	ext->sensor_con.peri_setting.i2c.slave_address = 0x3D;
 	ext->sensor_con.peri_setting.i2c.speed = 400000;
 
 	ext->from_con.product_name = FROMDRV_NAME_NOTHING;

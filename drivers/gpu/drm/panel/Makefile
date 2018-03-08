@@ -7,3 +7,4 @@ obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E8FA0) += panel-samsung-s6e8fa0.o
 obj-$(CONFIG_DRM_PANEL_SPARKLING_EW400WV) += panel-sparkling-eh400wv.o
 obj-$(CONFIG_DRM_PANEL_SHARP_LQ101R1SX01) += panel-sharp-lq101r1sx01.o
 obj-$(CONFIG_DRM_PANEL_SHARP_LS043T1LE01) += panel-sharp-ls043t1le01.o
+obj-$(CONFIG_DRM_PANEL_AUO_X163QLN) += panel-auo-x163qln01.o

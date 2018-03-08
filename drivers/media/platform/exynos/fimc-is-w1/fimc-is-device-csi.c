@@ -24,6 +24,10 @@
 
 #include "fimc-is-core.h"
 #include "fimc-is-device-csi.h"
+#include <linux/interrupt.h>
+
+#include <linux/kthread.h>  // for threads
+
 
 /* PMU for FIMC-IS*/
 #define MIPICSI0_REG_BASE	(S5P_VA_MIPICSI0)   /* phy : 0x13c2_0000 */
@@ -200,7 +204,6 @@ static void s5pcsis_enable_interrupts(unsigned long __iomem *base_reg,
 			val &= ~S5PCSIS_INTMSK_FRAME_END_CH2;
 		}
 	}
-
 #if defined(CONFIG_SOC_EXYNOS5260)
 	/* FIXME: hard coded, only for rhea */
 	writel(0xFFF01037, base_reg + TO_WORD_OFFSET(S5PCSIS_INTMSK));
@@ -262,15 +265,20 @@ static void __s5pcsis_set_format(unsigned long __iomem *base_reg,
 
 	/* Color format */
 	val = readl(base_reg + TO_WORD_OFFSET(S5PCSIS_CONFIG));
+    pr_info(" - format 0x%x  (0x%x) \n",image->format.pixelformat,V4L2_PIX_FMT_YUYV);
+
 
 	if (image->format.pixelformat == V4L2_PIX_FMT_SGRBG8)
 		val = (val & ~S5PCSIS_CFG_FMT_MASK) | S5PCSIS_CFG_FMT_RAW8;
 	else if (image->format.pixelformat == V4L2_PIX_FMT_YUYV)
 		val = (val & ~S5PCSIS_CFG_FMT_MASK) | S5PCSIS_CFG_FMT_YCBCR422_8BIT;
+    else if(image->format.pixelformat == V4L2_PIX_FMT_RGB565)
+        val = (val & ~S5PCSIS_CFG_FMT_MASK) | 0x22;
 	else if (image->format.pixelformat == V4L2_PIX_FMT_MJPEG)
 		val = (val & ~S5PCSIS_CFG_FMT_MASK) | S5PCSIS_CFG_FMT_USER(1);
 	else
 		val = (val & ~S5PCSIS_CFG_FMT_MASK) | S5PCSIS_CFG_FMT_RAW10;
+
 
 #if defined(CONFIG_SOC_EXYNOS5430) || defined(CONFIG_SOC_EXYNOS5422)
 	val |= S5PCSIS_CFG_END_INTERVAL(1);
@@ -281,7 +289,8 @@ static void __s5pcsis_set_format(unsigned long __iomem *base_reg,
 	val = (image->window.o_width << 16) | image->window.o_height;
 	writel(val, base_reg + TO_WORD_OFFSET(S5PCSIS_RESOL));
 
-	/* Output channel2 for DT */
+
+    /* Output channel2 for DT */
 	if (image->format.field == V4L2_FIELD_INTERLACED) {
 		val = readl(base_reg + TO_WORD_OFFSET(S5PCSIS_CONFIG_CH2));
 		val |= S5PCSIS_CFG_VIRTUAL_CH(2);
@@ -339,13 +348,14 @@ static void s5pcsis_set_params(unsigned long __iomem *base_reg,
 	}
 
 	/* Not using external clock. */
-	val &= ~S5PCSIS_CTRL_WCLK_EXTCLK;
+	//val &= ~S5PCSIS_CTRL_WCLK_EXTCLK;
 
 	writel(val, base_reg + TO_WORD_OFFSET(S5PCSIS_CTRL));
 
 	/* Update the shadow register. */
 	val = readl(base_reg + TO_WORD_OFFSET(S5PCSIS_CTRL));
-	writel(val | S5PCSIS_CTRL_UPDATE_SHADOW(0), base_reg + TO_WORD_OFFSET(S5PCSIS_CTRL));
+
+    writel(val | S5PCSIS_CTRL_UPDATE_SHADOW(0), base_reg + TO_WORD_OFFSET(S5PCSIS_CTRL));
 }
 
 int fimc_is_csi_open(struct v4l2_subdev *subdev)
@@ -409,7 +419,6 @@ static int csi_s_power(struct v4l2_subdev *subdev,
 	struct fimc_is_device_csi *csi;
 
 	BUG_ON(!subdev);
-
 	csi = (struct fimc_is_device_csi *)v4l2_get_subdevdata(subdev);
 	if (!csi) {
 		err("csi is NULL");
@@ -568,6 +577,48 @@ static const struct v4l2_subdev_ops subdev_ops = {
 	.video = &video_ops
 };
 
+ int csi_hw_g_interrupt(unsigned long __iomem *base_reg)
+ {
+     u32 val;
+
+     val = readl(base_reg + TO_WORD_OFFSET(S5PCSIS_INTSRC));
+     writel(val, base_reg + TO_WORD_OFFSET(S5PCSIS_INTSRC));
+
+     return val;
+ }
+
+ static irqreturn_t fimc_is_csi_isr(int irq, void *data)
+ {
+     u32 status;
+     struct fimc_is_device_csi *csi;
+
+     csi = data;
+
+     status = csi_hw_g_interrupt(csi->base_reg);
+     info("CSI%d : irq%d(%X)\n",csi->instance, irq, status);
+
+     return IRQ_HANDLED;
+ }
+
+
+int poll_irq(void *data) {
+    struct fimc_is_device_csi *csi;
+    csi = data;
+    u32 status;
+
+    /* until module unload */
+    while ( !kthread_should_stop() ) {
+
+        status = csi_hw_g_interrupt(csi->base_reg);
+        if(status != 0)
+            info("CSI%d : irqreq (%X)\n",csi->instance, status);
+        mdelay(100);
+    }
+
+    return 0;
+}
+
+
 int fimc_is_csi_probe(struct fimc_is_device_sensor *device,
 	u32 instance)
 {
@@ -596,7 +647,9 @@ int fimc_is_csi_probe(struct fimc_is_device_sensor *device,
 	switch (instance) {
 	case CSI_ID_A:
 		csi->base_reg = (unsigned long *)MIPICSI0_REG_BASE;
-		break;
+        //struct task_struct * kthread = kthread_create(poll_irq, csi, "poll_IRQ_test");
+        //wake_up_process(kthread);
+        break;
 	case CSI_ID_B:
 		csi->base_reg = (unsigned long *)MIPICSI1_REG_BASE;
 		break;
@@ -608,6 +661,7 @@ int fimc_is_csi_probe(struct fimc_is_device_sensor *device,
 		ret = -EINVAL;
 		goto err_invalid_instance;
 	}
+
 
 	v4l2_subdev_init(subdev_csi, &subdev_ops);
 	v4l2_set_subdevdata(subdev_csi, csi);

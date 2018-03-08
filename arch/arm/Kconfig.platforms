@@ -1,0 +1,6 @@
+menu "Platform selection"
+
+config KITRA520
+	bool "Kitra520 support"
+
+endmenu
