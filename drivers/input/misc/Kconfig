@@ -12,6 +12,9 @@ menuconfig INPUT_MISC
 
 if INPUT_MISC
 
+source "drivers/input/misc/lsm6dsl/Kconfig"
+source "drivers/input/misc/lsm303agr/Kconfig"
+
 config INPUT_88PM860X_ONKEY
 	tristate "88PM860x ONKEY support"
 	depends on MFD_88PM860X
@@ -795,5 +798,13 @@ config INPUT_DRV2667_HAPTICS
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called drv2667-haptics.
+
+config STMVL53L0X
+    tristate "STM VL53L0 Proximity support"
+    depends on I2C=y
+    help
+      Say Y here if you want to use STMicroelectronics's proximity sensor
+      through I2C interface.
+
 
 endif
