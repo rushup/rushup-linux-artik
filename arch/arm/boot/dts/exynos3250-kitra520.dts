@@ -522,11 +522,7 @@
 			VDDD-supply = <&vddext_18>;
 		};
 
-		bq24296_charger@6b {
-			compatible = "ti,bq24296";
-			reg = <0x6b>;
-			ti,chg_current = <1000 500 2000>;
-		};
+
 	};
 
 	i2s: i2s@13970000 {
