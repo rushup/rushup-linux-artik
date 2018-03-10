@@ -1,13 +1,11 @@
-# Linux Kernel for ARTIK5 and ARTIK10
+# Linux Kernel for KITRA520
 ## Contents
 1. [Introduction](#1-introduction)
 2. [Build guide](#2-build-guide)
 3. [Update guide](#3-update-guide)
 
 ## 1. Introduction
-This 'linux-artik' repository is linux kernel source for artik5(artik520) and
-artik10(artik1020). The base kernel version of artik is linux-3.10.93 and based
-on Samsung Exynos kernel.
+Fork from 'linux-artik' adding Kitra520 support.
 
 ---
 ## 2. Build guide
@@ -41,21 +39,6 @@ make ARCH=arm menuconfig
 ```
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j4
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- exynos3250-artik5.dtb
-./scripts/mk_modules.sh
-```
-
-+ For artik10>
-```
-make ARCH=arm artik10_defconfig
-```
-If you want to change kernel configurations,
-```
-make ARCH=arm menuconfig
-```
-
-```
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j4
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- exynos5422-artik10.dtb
 ./scripts/mk_modules.sh
 ```
 
