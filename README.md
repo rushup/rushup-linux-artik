@@ -1,11 +1,11 @@
-# Linux Kernel for ARTIK
+# Linux Kernel for KITRA710C and KitraGTI
 ## Contents
 1. [Introduction](#1-introduction)
 2. [Build guide](#2-build-guide)
 3. [Update guide](#3-update-guide)
 
 ## 1. Introduction
-Fork from 'linux-artik' repository adding Kitra530 and Kitra710C support.
+Fork from 'linux-artik' repository adding KITRA710C and KitraGTI support.
 
 ## 2. Build guide
 ### 2.1 Install cross compiler
