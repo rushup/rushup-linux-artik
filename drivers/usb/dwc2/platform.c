@@ -66,6 +66,7 @@ static const struct dwc2_core_params params_bcm2835 = {
 	.dma_desc_enable		= 0,
 #else
 	.dma_desc_enable		= 1,
+#endif
 	.speed				= 0,	/* High Speed */
 	.enable_dynamic_fifo		= 1,
 	.en_multiple_tx_fifo		= 1,
