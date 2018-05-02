@@ -62,11 +62,6 @@ static const struct dwc2_core_params params_bcm2835 = {
 	.otg_cap			= 0,	/* HNP/SRP capable */
 	.otg_ver			= 0,	/* 1.3 */
 	.dma_enable			= 1,
-#if defined(CONFIG_KITRAGTI)
-	.dma_desc_enable		= 0,
-#else
-	.dma_desc_enable		= 1,
-#endif
 	.speed				= 0,	/* High Speed */
 	.enable_dynamic_fifo		= 1,
 	.en_multiple_tx_fifo		= 1,
@@ -127,7 +122,11 @@ static const struct dwc2_core_params params_nexell = {
 	.otg_cap			= 0,	/* HNP/SRP capable */
 	.otg_ver			= 0,	/* 1.3 */
 	.dma_enable			= 1,
-	.dma_desc_enable		= 0,
+#if defined(CONFIG_KITRAGTI)
+	.dma_desc_enable		= 1,//0,
+#else
+	.dma_desc_enable		= 1,
+#endif
 	.speed				= 0,	/* High Speed */
 	.enable_dynamic_fifo		= 1,
 	.en_multiple_tx_fifo		= 1,
