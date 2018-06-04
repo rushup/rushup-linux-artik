@@ -337,13 +337,22 @@
 		compatible = "linux,snd-soc-dummy";
 		#sound-dai-cells = <0>;
 	};
-
+	adau7002: adau7002 {
+		#sound-dai-cells = <0>;
+		compatible = "adi,adau7002";
+	};
 	sound {
 		compatible = "simple-audio-card";
 		simple-audio-card,name = "Artik710 raptor Audio";
-		simple-audio-card,mclk-fs = <64>;
+		simple-audio-card,mclk-fs = <256>;
 
-/*
+		simple-audio-card,widgets =
+			"Microphone", "Microphone Jack";
+
+		simple-audio-card,routing =
+			"Capture", "PDM_DAT";
+		status = "okay";
+
 
 		simple-audio-card,dai-link@0 {
 		    cpu {
@@ -355,18 +364,18 @@
 		    };
 		};
 
-*/
-		simple-audio-card,dai-link@0 {
-		    format = "pdm";
+		simple-audio-card,dai-link@1 {
+		    format = "i2s";
 		    cpu {
 			sound-dai = <&i2s_0 0>;
 		    };
 
 		    codec {
-			sound-dai = <&codec_test>;
+			sound-dai = <&adau7002>;
 		    };
 
 		};
+
 	};
 
 	i2c_gpio4: i2c@4 {
