@@ -1,5 +1,11 @@
 menu "Platform selection"
 
+config KITRA710C
+	bool "Kitra710C support"
+
+config KITRAGTI
+	bool "KitraGTI support"
+
 config ARCH_BCM_IPROC
 	bool "Broadcom iProc SoC Family"
 	help

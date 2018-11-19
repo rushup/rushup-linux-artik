@@ -2412,6 +2412,7 @@ static void _dwc2_hcd_stop(struct usb_hcd *hcd)
 #if defined(CONFIG_PM) && (defined(CONFIG_ARCH_S5P4418) || \
 	defined(CONFIG_ARCH_S5P6818))
 
+
 static int _dwc2_hcd_suspend(struct usb_hcd *hcd)
 {
 	struct dwc2_hsotg *hsotg = dwc2_hcd_to_hsotg(hcd);

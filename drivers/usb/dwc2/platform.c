@@ -121,6 +121,7 @@ static const struct dwc2_core_params params_nexell = {
 	.otg_cap			= 0,	/* HNP/SRP capable */
 	.otg_ver			= 0,	/* 1.3 */
 	.dma_enable			= 1,
+
 	.speed				= 0,	/* High Speed */
 	.enable_dynamic_fifo		= 1,
 	.en_multiple_tx_fifo		= 1,
@@ -583,9 +584,11 @@ static void dwc2_driver_suspend_regs(struct dwc2_hsotg *hsotg, int suspend)
 		regs->gdfifocfg = readl(hsotg->regs + GDFIFOCFG);
 		regs->adpctl = readl(hsotg->regs + ADPCTL);
 		regs->hptxfsiz = readl(hsotg->regs + HPTXFSIZ);
+		#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
 		for (idx = 1; idx < hsotg->num_of_eps; idx++)
 			regs->dtxfsiz[idx] = readl(hsotg->regs +
 						   DPTXFSIZN(idx));
+		#endif
 	} else {
 		writel(regs->gotgctl, hsotg->regs + GOTGCTL);
 		writel(regs->gotgint, hsotg->regs + GOTGINT);
@@ -607,9 +610,11 @@ static void dwc2_driver_suspend_regs(struct dwc2_hsotg *hsotg, int suspend)
 		writel(regs->gdfifocfg, hsotg->regs + GDFIFOCFG);
 		writel(regs->adpctl, hsotg->regs + ADPCTL);
 		writel(regs->hptxfsiz, hsotg->regs + HPTXFSIZ);
+		#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
 		for (idx = 1; idx < hsotg->num_of_eps; idx++)
 			writel(regs->dtxfsiz[idx], hsotg->regs +
 			       DPTXFSIZN(idx));
+		#endif
 	}
 }
 

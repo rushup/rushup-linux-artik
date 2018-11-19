@@ -2060,6 +2060,7 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE_AND_INTERFACE_INFO(WETELECOM_VENDOR_ID, WETELECOM_PRODUCT_6802, 0xff, 0xff, 0xff) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(WETELECOM_VENDOR_ID, WETELECOM_PRODUCT_WMD300, 0xff, 0xff, 0xff) },
 	{ USB_DEVICE_AND_INTERFACE_INFO(0x03f0, 0x421d, 0xff, 0xff, 0xff) }, /* HP lt2523 (Novatel E371) */
+	{ USB_DEVICE(0x19d2, 0x1476) }, /* ZTE ME3630 */
 	{ } /* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, option_ids);
@@ -2131,6 +2132,24 @@ static int option_probe(struct usb_serial *serial,
 	if (dev_desc->idVendor == cpu_to_le16(SAMSUNG_VENDOR_ID) &&
 	    dev_desc->idProduct == cpu_to_le16(SAMSUNG_PRODUCT_GT_B3730) &&
 	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA)
+		return -ENODEV;
+
+	/*ZTE MODEM */
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+			serial->dev->descriptor.idProduct == 0x1476 &&
+			serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
+		return -ENODEV;
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+			serial->dev->descriptor.idProduct == 0x1476 &&
+			serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+			serial->dev->descriptor.idProduct == 0x1509 &&
+			serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+			serial->dev->descriptor.idProduct == 0x1509 &&
+			serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
 		return -ENODEV;
 
 	/* Store the blacklist info so we can use it during attach. */

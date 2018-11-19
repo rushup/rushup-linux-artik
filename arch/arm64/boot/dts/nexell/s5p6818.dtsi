@@ -616,7 +616,7 @@
 			reset-names = "adc-reset";
 			clocks = <&pclk>;
 			clock-names = "adc";
-			sample_rate = <200000>;
+			sample_rate = <1000000>; /* Changed from 200000 */
 			#io-channel-cells = <1>;
 			status = "disabled";
 		};
